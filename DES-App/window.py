@@ -28,15 +28,53 @@ class GUIManager:
 
     #DES Window Creation
     def create_des_window(self, chart_function, figure_canvas_agg=None):
-        figure_h = 1000
+        figure_h = 600
         figure_w = 1000
-        layout = [
-            [sg.Button("Next"), sg.Button("Previous"), sg.Button("Home")],
-            [sg.Canvas(size=(figure_w, figure_h), key="-CANVAS-")],
-            [sg.Text("Graph Summary Information"), sg.Text("Field One:"), sg.Text("Field Two:")],
+        
+        #Left Column Navigation
+        left_column = [
+            [sg.Button("Next", size=(10, 1))],
+            [sg.Button("Previous", size=(10, 1))],
+            [sg.Button("Home", size=(10, 1))]
+        ]
+        
+        #Right Column Options and Data Source Selection and Upload
+        right_column = [
+            [sg.Button ("Set Data Source", size=(15, 1))],
+            [sg.Button("Upload Data Source", size=(15, 1))],
+            [sg.Button("Chart Settings", size=(15, 1))],
+            [sg.Button("Zoom +", size=(15,1))],
+            [sg.Button("Zoom -", size=(15, 1))]
+        ]
+
+        #Canvas for graphs in the center column
+        chart_canvas = [[sg.Canvas(size=(figure_w, figure_h), key="-CANVAS-")]]
+
+        #Summary Section
+        summary_section = [
+            [sg.Text("Graph Summary Information", justification="center")],
+            [sg.Text("Field One:"), sg.InputText(key="-FIELD1-", size=(20, 1))],
+            [sg.Text("Field Two:"), sg.InputText(key="-FIELD2-", size=(20, 1))]
+        ]
+
+        #Chat Section and User input
+        chat_section = [
             [sg.Multiline(size=(60, 5), key="-CHAT-")],
             [sg.Input(key="-INPUT-"), sg.Button("Send")]
         ]
+
+        #DES Layout for GUI
+        layout = [
+            [
+                sg.Column(left_column, vertical_alignment="top"),
+                sg.Column(chart_canvas, justification="center"),
+                sg.Column(right_column, vertical_alignment="top")
+            ],
+            [sg.Column(summary_section, justification="center")],
+            [sg.Column(chat_section, justification="center")]
+        ]
+
+        #Create the DES window
         window = sg.Window("Data Explorer Screen", layout, finalize=True)
         
         #Delete existing figure from previous screen if it exists
