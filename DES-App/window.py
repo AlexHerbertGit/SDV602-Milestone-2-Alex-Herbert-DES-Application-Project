@@ -2,6 +2,7 @@
 import PySimpleGUI as sg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from charts import ChartManager
+import matplotlib.pyplot as plt
 
 #GUIManager Class instantiation
 class GUIManager:
@@ -26,9 +27,9 @@ class GUIManager:
         return sg.Window("Main Menu", layout, finalize=True)
 
     #DES Window Creation
-    def create_des_window(self, chart_function):
-        figure_h = 650
-        figure_w = 650
+    def create_des_window(self, chart_function, figure_canvas_agg=None):
+        figure_h = 1000
+        figure_w = 1000
         layout = [
             [sg.Button("Next"), sg.Button("Previous"), sg.Button("Home")],
             [sg.Canvas(size=(figure_w, figure_h), key="-CANVAS-")],
@@ -37,7 +38,13 @@ class GUIManager:
             [sg.Input(key="-INPUT-"), sg.Button("Send")]
         ]
         window = sg.Window("Data Explorer Screen", layout, finalize=True)
-        figure_canvas_agg = None
+        
+        #Delete existing figure from previous screen if it exists
+        if figure_canvas_agg is not None:
+            figure_canvas_agg.get_tk_widget().forget()
+
+        #Clears the current figure from the canvas to make sure the new one is being drawn
+        plt.clf()
 
         #Draw chart from ChartManager using passed-in chart function
         fig = chart_function()
@@ -55,47 +62,41 @@ class GUIManager:
     #Event Handler Function
     def handle_events(self):
         window = self.create_main_menu()
+        figure_canvas_agg = None
 
         while True:
             event, values = window.read()
 
             if event in (sg.WIN_CLOSED, "Close Application"):
                 break
-
             elif event == "Open DES 1":
                 self.current_des_index = 0 
                 window.close()
                 #Pass line_plot function as the chart_function parameter
-                window, fig_canvas = self.create_des_window(self.chart_manager.draw_line_chart)
-
+                window, figure_canvas_agg = self.create_des_window(self.chart_manager.draw_line_chart, figure_canvas_agg)
             elif event == "Open DES 2":
                 self.current_des_index = 1
                 window.close()
                 #Pass bar_chart function as the chart_function parameter
-                window, fig_canvas = self.create_des_window(self.chart_manager.draw_bar_chart)
-
+                window, figure_canvas_agg = self.create_des_window(self.chart_manager.draw_bar_chart, figure_canvas_agg)
             elif event == "Open DES 3":
                 self.current_des_index = 2
                 window.close()
                 #Pass scatter_plot function as the chart_function parameter
-                window, fig_canvas = self.create_des_window(self.chart_manager.draw_scatter_plot)
-
+                window, figure_canvas_agg = self.create_des_window(self.chart_manager.draw_scatter_plot, figure_canvas_agg)
             elif event == "Next":
                 window.close()
                 #Increment the current_des_index and cycle through DES windows
                 self.current_des_index = (self.current_des_index + 1) % len(self.des_windows)
-                window, fig_canvas = self.create_des_window(self.des_windows[self.current_des_index])
-
+                window, figure_canvas_agg = self.create_des_window(self.des_windows[self.current_des_index], figure_canvas_agg)
             elif event == "Previous":
                 window.close()
                 #Decrement the current_des_index and cycle back through DES windows
                 self.current_des_index = (self.current_des_index - 1) %len(self.des_windows)
-                window, fig_canvas = self.create_des_window(self.des_windows[self.current_des_index])
-                
+                window, figure_canvas_agg = self.create_des_window(self.des_windows[self.current_des_index], figure_canvas_agg)
             elif event == "Home":
                 window.close()
                 window = self.create_main_menu()
-
             elif event == "Send":
                 #Logic for chat/message functionality placeholder
                 chat_text = values["-INPUT-"]
