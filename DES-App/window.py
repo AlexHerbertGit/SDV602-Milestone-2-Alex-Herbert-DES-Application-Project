@@ -1,10 +1,15 @@
-#Chart Manager Import Statments
+""" 
+GUI Manager and DES window creation Class
+
+"""
+
+"""Chart Manager Import Statments"""
 import PySimpleGUI as sg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from charts import ChartManager
 import matplotlib.pyplot as plt
 
-#GUIManager Class instantiation
+"""GUIManager Class instantiation"""
 class GUIManager:
     def __init__(self):
         self.chart_manager = ChartManager()
@@ -15,8 +20,8 @@ class GUIManager:
             self.chart_manager.draw_scatter_plot
         ]
 
-    #Main Menu Window Creation
-    def create_main_menu(self):
+    """Main Menu Window Creation"""
+    def create_main_menu(self):          
         layout = [
             [sg.Text("Main Menu", font=("Helvetica", 16), justification="center")],
             [sg.Button ("Open DES 1"), sg.Button("Open DES 2"), sg.Button("Open DES 3")],
@@ -26,20 +31,20 @@ class GUIManager:
         ]
         return sg.Window("Main Menu", layout, finalize=True)
 
-    #DES Window Creation
-    def create_des_window(self, chart_function, figure_canvas_agg=None):
+    """DES Window Creation"""
+    def create_des_window(self, chart_function, figure_canvas_agg=None):           
         figure_h = 600
         figure_w = 1000
         
-        #Left Column Navigation
-        left_column = [
+        
+        left_column = [             #Left Column Navigation
             [sg.Button("Next", size=(10, 1))],
             [sg.Button("Previous", size=(10, 1))],
             [sg.Button("Home", size=(10, 1))]
         ]
         
-        #Right Column Options and Data Source Selection and Upload
-        right_column = [
+        
+        right_column = [            #Right Column Options and Data Source Selection and Upload
             [sg.Button ("Set Data Source", size=(15, 1))],
             [sg.Button("Upload Data Source", size=(15, 1))],
             [sg.Button("Chart Settings", size=(15, 1))],
@@ -47,24 +52,24 @@ class GUIManager:
             [sg.Button("Zoom -", size=(15, 1))]
         ]
 
-        #Canvas for graphs in the center column
-        chart_canvas = [[sg.Canvas(size=(figure_w, figure_h), key="-CANVAS-")]]
+        
+        chart_canvas = [[sg.Canvas(size=(figure_w, figure_h), key="-CANVAS-")]]         #Canvas for graphs in the center column
 
-        #Summary Section
-        summary_section = [
+        
+        summary_section = [             #Summary Section
             [sg.Text("Graph Summary Information", justification="center")],
             [sg.Text("Field One:"), sg.InputText(key="-FIELD1-", size=(20, 1))],
             [sg.Text("Field Two:"), sg.InputText(key="-FIELD2-", size=(20, 1))]
         ]
 
-        #Chat Section and User input
-        chat_section = [
+        
+        chat_section = [            #Chat Section and User input
             [sg.Multiline(size=(60, 5), key="-CHAT-")],
             [sg.Input(key="-INPUT-"), sg.Button("Send")]
         ]
 
-        #DES Layout for GUI
-        layout = [
+        
+        layout = [          #DES Layout for GUI
             [
                 sg.Column(left_column, vertical_alignment="top"),
                 sg.Column(chart_canvas, justification="center"),
@@ -74,30 +79,30 @@ class GUIManager:
             [sg.Column(chat_section, justification="center")]
         ]
 
-        #Create the DES window
-        window = sg.Window("Data Explorer Screen", layout, finalize=True)
+       
+        window = sg.Window("Data Explorer Screen", layout, finalize=True)            #Create the DES window
         
-        #Delete existing figure from previous screen if it exists
-        if figure_canvas_agg is not None:
+        
+        if figure_canvas_agg is not None:           #Delete existing figure from previous screen if it exists
             figure_canvas_agg.get_tk_widget().forget()
 
-        #Clears the current figure from the canvas to make sure the new one is being drawn
-        plt.clf()
+        
+        plt.clf()           #Clears the current figure from the canvas to make sure the new one is being drawn
 
-        #Draw chart from ChartManager using passed-in chart function
-        fig = chart_function()
+       
+        fig = chart_function()           #Draw chart from ChartManager using passed-in chart function
         figure_canvas_agg = self.draw_figure(window['-CANVAS-'].TKCanvas, fig)
 
         return window, figure_canvas_agg
 
-    #Draw Figure Function
+    """Draw Figure Function"""
     def draw_figure(self, canvas, figure):
         figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
         figure_canvas_agg.draw()
         figure_canvas_agg.get_tk_widget().pack(side="top", fill="both", expand=1)
         return figure_canvas_agg
 
-    #Event Handler Function
+    """Event Handler Function"""
     def handle_events(self):
         window = self.create_main_menu()
         figure_canvas_agg = None

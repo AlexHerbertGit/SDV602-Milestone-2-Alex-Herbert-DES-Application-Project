@@ -1,14 +1,15 @@
-#Chart Module
+"""Chart/Graph Creation and Settings Module"""
 
-#Import Statements for dependencies
+"""Import Statements for dependencies"""
 import matplotlib.pyplot as plt
 import numpy as np
 
+"""ChartManager Class"""
 class ChartManager:
     def __init__(self):
         pass
 
-    #Draw Line Chart function
+    """Draw Line Chart function"""
     def draw_line_chart(self):
         data_list = [-1, -4.5, 16, 23]
         plt.plot(data_list)
@@ -17,17 +18,17 @@ class ChartManager:
         plt.ylabel("Y Values")
         return plt.gcf()
     
-    #Draw Bar Chart function
+    """Draw Bar Chart function"""
     def draw_bar_chart(self):
         years = [str(year) for year in range(2010, 2019)]
-        visitors = [1234, 5678, 8900, 345433, 22234, 55678, 43455, 76855, 69788]
+        visitors = [1234, 5678, 8900, 345433, 22234, 55678, 43455, 76855, 69788]            #Match the amount of values with the amount of years in the year range
         plt.bar(years, visitors, color="green")
         plt.xlabel("Year")
         plt.ylabel("Visitors")
         plt.title("Bar Chart Example")
         return plt.gcf()
     
-    #Draw Scatter Plot Chart
+    """Draw Scatter Plot Chart"""
     def draw_scatter_plot(self):
         x = np.random.rand(50) * 100
         y = np.random.rand(50) * 100
