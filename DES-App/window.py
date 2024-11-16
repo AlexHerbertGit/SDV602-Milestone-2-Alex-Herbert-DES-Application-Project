@@ -8,6 +8,7 @@ import PySimpleGUI as sg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from charts import ChartManager
 import matplotlib.pyplot as plt
+from data_manager import DataManager
 
 """GUIManager Class instantiation"""
 class GUIManager:
@@ -140,6 +141,29 @@ class GUIManager:
             elif event == "Home":
                 window.close()
                 window = self.create_main_menu()
+            elif event == "Upload Data Source":
+                file_path = sg.popup_get_file("Select Data File", file_types=(("CSV Files", "*.csv"),))
+                if file_path:
+                    self.uploaded_file_path = file_path
+                    data = self.data_manager.read_local_data(self.uploaded_file_path)
+                    if data is not None:
+                        sg.popup("Data Uploaded Successfully!", title="Success")
+            elif event == "Set Data Source":
+            if self.uploaded_file_path:
+                data = self.data_manager.read_local_data(self.uploaded_file_path)
+                if data is not None:
+                    sg.popup("Data Source Set Successfully!", title="Success")
+                    window["-FIELD1-"].update(self.data_manager.get_data_summary())
+
+                    # Update the chart with the new data
+                    plt.clf()
+                    fig = self.des_windows[self.current_des_index](data)
+                    figure_canvas_agg.get_tk_widget().forget()
+                    figure_canvas_agg = self.draw_figure(window["-CANVAS-"].TKCanvas, fig)
+                else:
+                    sg.popup("Failed to load data. Please upload a valid file.", title="Error")
+            else:
+                sg.popup("No data source uploaded. Please upload a data source first.", title="Error")
             elif event == "Send":
                 #Logic for chat/message functionality placeholder
                 chat_text = values["-INPUT-"]

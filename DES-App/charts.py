@@ -9,36 +9,44 @@ class ChartManager:
     def __init__(self):
         pass
 
-    """Draw Line Chart function"""
-    def draw_line_chart(self):
-        data_list = [-1, -4.5, 16, 23]
-        plt.plot(data_list)
-        plt.title("Line Chart Example")
-        plt.xlabel("X Values")
-        plt.ylabel("Y Values")
+    def draw_line_chart(self, data=None):
+        """Draws a line chart with provided data."""
+        plt.figure()
+        if data is not None:
+            x = data.iloc[:, 0]  # First column as X-axis
+            y = data.iloc[:, 1]  # Second column as Y-axis
+            plt.plot(x, y, marker="o", linestyle="-")
+            plt.title("Line Chart")
+            plt.xlabel("X Axis")
+            plt.ylabel("Y Axis")
+        else:
+            plt.text(0.5, 0.5, "No Data", ha="center", va="center", fontsize=12)
         return plt.gcf()
-    
-    """Draw Bar Chart function"""
-    def draw_bar_chart(self):
-        years = [str(year) for year in range(2010, 2019)]
-        visitors = [1234, 5678, 8900, 345433, 22234, 55678, 43455, 76855, 69788]            #Match the amount of values with the amount of years in the year range
-        plt.bar(years, visitors, color="green")
-        plt.xlabel("Year")
-        plt.ylabel("Visitors")
-        plt.title("Bar Chart Example")
+
+    def draw_bar_chart(self, data=None):
+        """Draws a bar chart with provided data."""
+        plt.figure()
+        if data is not None:
+            x = data.iloc[:, 0]  # First column as categories
+            y = data.iloc[:, 1]  # Second column as values
+            plt.bar(x, y, color="skyblue")
+            plt.title("Bar Chart")
+            plt.xlabel("Categories")
+            plt.ylabel("Values")
+        else:
+            plt.text(0.5, 0.5, "No Data", ha="center", va="center", fontsize=12)
         return plt.gcf()
-    
-    """Draw Scatter Plot Chart"""
-    def draw_scatter_plot(self):
-        x = np.random.rand(50) * 100
-        y = np.random.rand(50) * 100
-        colors = np.random.rand(50)
-        sizes = (30 + np.random.rand(50)) ** 2
 
-        plt.scatter(x, y, s=sizes, c=colors, alpha=0.8, edgecolor='k')
-
-        plt.title("Scatter Plot Example")
-        plt.xlabel("X Values")
-        plt.ylabel("Y Values")
-        plt.grid(True)
+    def draw_scatter_plot(self, data=None):
+        """Draws a scatter plot with provided data."""
+        plt.figure()
+        if data is not None:
+            x = data.iloc[:, 0]  # First column as X-axis
+            y = data.iloc[:, 1]  # Second column as Y-axis
+            plt.scatter(x, y, c="red", alpha=0.5)
+            plt.title("Scatter Plot")
+            plt.xlabel("X Axis")
+            plt.ylabel("Y Axis")
+        else:
+            plt.text(0.5, 0.5, "No Data", ha="center", va="center", fontsize=12)
         return plt.gcf()
